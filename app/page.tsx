@@ -1,11 +1,38 @@
-import { Button } from "@/components/ui/button";
+import CompanionCard from "@/components/CompanionCard";
+import CompanionsLIst from "@/components/CompanionsLIst";
+import Cta from "@/components/CTA";
+import {
+  getAllCompanions,
+  getRecentSessions,
+} from "@/lib/actions/companionActions";
+import { getSubjectColor } from "@/lib/utils";
 
-const Page = () => {
+const Page = async () => {
+  const companions = await getAllCompanions({ limit: 3 });
+  const recentSessionsCompanions = await getRecentSessions(10);
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Welcome to the LMS System</h1>
-      <Button>Click Me</Button>
-    </div>
+    <main>
+      <h1>Popular Companions</h1>
+      <section className="home-section">
+        {companions.map((companion) => (
+          <CompanionCard
+            key={companion.id}
+            {...companion}
+            color={getSubjectColor(companion.subject)}
+          />
+        ))}
+      </section>
+
+      <section className="home-section">
+        <CompanionsLIst
+          title="Recently completed sessions"
+          companions={recentSessionsCompanions}
+          classNames="w-2/3 max-lg:w-full"
+        />
+        <Cta />
+      </section>
+    </main>
   );
 };
 
